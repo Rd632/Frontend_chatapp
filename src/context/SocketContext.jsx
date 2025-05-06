@@ -15,27 +15,36 @@ export const SocketContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		if (authUser) {
-			const socket = io("https://backend-chatapp-5e95.onrender.com/", {
-				query: {
-					userId: authUser._id,
-				},
-			});
-
-			setSocket(socket);
-
-			// socket.on() is used to listen to the events. can be used both on client and server side
-			socket.on("getOnlineUsers", (users) => {
-				setOnlineUsers(users);
-			});
-
-			return () => socket.close();
+			// Only create a socket if one doesn't already exist
+			if (!socket) {
+				const socketInstance = io("https://backend-chatapp-5e95.onrender.com/", {
+					query: {
+						userId: authUser._id,
+					},
+				});
+	
+				setSocket(socketInstance);
+	
+				socketInstance.on("getOnlineUsers", (users) => {
+					setOnlineUsers(users);
+				});
+			}
 		} else {
+			// Clean up when authUser is removed or changes
 			if (socket) {
 				socket.close();
 				setSocket(null);
 			}
 		}
-	}, [authUser, socket]);
+	
+		// Clean up on unmount
+		return () => {
+			if (socket) {
+				socket.close();
+			}
+		};
+	}, [authUser , socket]); // Only rerun when authUser changes
+	
 
 	return <SocketContext.Provider value={{ socket, onlineUsers }}>{children}</SocketContext.Provider>;
 };
