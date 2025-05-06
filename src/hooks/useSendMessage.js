@@ -5,7 +5,7 @@ import { useSocketContext } from "../context/SocketContext";
 
 const useSendMessage = () => {
 	const [loading, setLoading] = useState(false);
-	const { setMessages, selectedConversation } = useConversation();
+	const {  selectedConversation } = useConversation();
 	const { socket } = useSocketContext();
 
 	const sendMessage = async (message) => {
@@ -26,7 +26,7 @@ const useSendMessage = () => {
 			if (data.error) throw new Error(data.error);
 
 			// ✅ Show sent message immediately to sender (Jack)
-			setMessages((prev) => [...prev, data]);
+			//setMessages((prev) => [...prev, data]);
 
 			// ✅ Send to receiver via Socket.io
 			socket.emit("sendMessage", {
