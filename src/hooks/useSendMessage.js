@@ -5,7 +5,7 @@ import { useSocketContext } from "../context/SocketContext"; // ✅
 
 const useSendMessage = () => {
 	const [loading, setLoading] = useState(false);
-	const { messages, setMessages, selectedConversation } = useConversation();
+	const {  setMessages, selectedConversation } = useConversation();
 	const { socket } = useSocketContext(); // ✅
 
 	const sendMessage = async (message) => {
@@ -22,7 +22,9 @@ const useSendMessage = () => {
 			const data = await res.json();
 			if (data.error) throw new Error(data.error);
 
-			setMessages([...messages, data]);
+			setMessages((prevMessages) => [...prevMessages, data]);
+
+
 
 			// ✅ Emit message to receiver via socket
 			socket.emit("sendMessage", {
