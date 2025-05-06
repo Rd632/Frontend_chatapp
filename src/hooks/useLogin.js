@@ -19,7 +19,9 @@ const useLogin = () => {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ username, password }),
+				credentials: "include", // ✅ This is essential for cookies to work
 			});
+			
 
 			// Check for a successful response status
 			if (!res.ok) {
